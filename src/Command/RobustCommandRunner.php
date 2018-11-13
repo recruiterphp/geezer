@@ -24,11 +24,15 @@ class RobustCommandRunner extends Command
      */
     private $askedToStop = false;
 
+    private $garbageCollectorCounter = 0;
+
     private const STOP_SIGNALS = [
         SIGINT,
         SIGQUIT,
         SIGTERM,
     ];
+
+    private const CYCLES_BEFORE_GC = 100;
 
     public function __construct(RobustCommand $wrapped, LoggerInterface $logger)
     {
@@ -77,6 +81,7 @@ class RobustCommandRunner extends Command
             $this->sleepAccordingTo($waitStrategy);
 
             $leadershipStrategy->release();
+            $this->possiblyCollectGarbage();
         }
 
         // probably not needed, ad abundantiam
@@ -114,5 +119,14 @@ class RobustCommandRunner extends Command
     {
         $this->sleepIfNotAskedToStop($waitStrategy->current());
         $waitStrategy->next();
+    }
+
+    private function possiblyCollectGarbage(): int
+    {
+        if (0 === (++$this->garbageCollectorCounter % self::CYCLES_BEFORE_GC)) {
+            return gc_collect_cycles();
+        }
+
+        return 0;
     }
 }
