@@ -1,0 +1,8 @@
+#!/bin/bash
+
+ROOT=`git rev-parse --show-toplevel`
+PHP_CS_FIXER="$ROOT/vendor/bin/php-cs-fixer"
+
+git status --porcelain | grep -e '^[[:space:]]*[AM]\(.*\).php$' | cut -c 3- | while read line; do
+    $PHP_CS_FIXER fix --config=$ROOT/.php_cs --verbose --path-mode=intersection "$line";
+done
