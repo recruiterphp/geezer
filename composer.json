@@ -1,0 +1,30 @@
+{
+    "name": "easywelfare/geezer",
+    "description": "PHP tools to build robust long-running processes",
+    "type": "library",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Easy Welfare Development Team",
+            "email": "dev@easywelfare.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "~4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Geezer\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Geezer\\": "tests"
+        }
+    }
+}
