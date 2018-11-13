@@ -1,0 +1,15 @@
+#!/bin/bash
+# Copy this file into your .git/hooks
+# Also run chmod +x .git/hooks/pre-commit
+ROOT=`git rev-parse --show-toplevel`
+
+PHP_CS_FIXER="$ROOT/vendor/bin/php-cs-fixer"
+
+git status --porcelain | grep -e '^[AM]\(.*\).php$' | cut -c 3- | while read line; do
+    $PHP_CS_FIXER fix --dry-run --config=$ROOT/.php_cs --verbose --path-mode=intersection "$line";
+    if [ "$?" -ne 0 ]; then
+        echo "Coding standards are not correct, cancelling your commit."
+        echo "Use scripts/cs-fix-modified-files to solve the problem"
+        exit 1
+    fi
+done
