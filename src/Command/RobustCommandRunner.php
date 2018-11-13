@@ -2,6 +2,7 @@
 
 namespace Geezer\Command;
 
+use Geezer\Timing\WaitStrategy;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

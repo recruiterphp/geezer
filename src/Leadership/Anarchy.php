@@ -1,6 +1,6 @@
 <?php
 
-namespace Geezer\Command;
+namespace Geezer\Leadership;
 
 class Anarchy implements LeadershipStrategy
 {
