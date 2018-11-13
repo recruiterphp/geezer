@@ -1,6 +1,6 @@
 <?php
 
-namespace Geezer\Command;
+namespace Geezer\Timing;
 
 class ExponentialBackoffStrategy implements WaitStrategy
 {

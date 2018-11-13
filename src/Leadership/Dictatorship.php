@@ -1,6 +1,6 @@
 <?php
 
-namespace Geezer\Command;
+namespace Geezer\Leadership;
 
 use Onebip\Concurrency\Lock;
 use Onebip\Concurrency\LockNotAvailableException;

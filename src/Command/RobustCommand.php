@@ -2,6 +2,8 @@
 
 namespace Geezer\Command;
 
+use Geezer\Leadership\LeadershipStrategy;
+use Geezer\Timing\WaitStrategy;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 
