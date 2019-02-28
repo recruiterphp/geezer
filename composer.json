@@ -30,7 +30,8 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Geezer\\": "src"
+            "Geezer\\": "src",
+            "Test\\Geezer\\": "tests/unit"
         }
     },
     "autoload-dev": {

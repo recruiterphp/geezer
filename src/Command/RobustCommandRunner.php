@@ -61,7 +61,7 @@ class RobustCommandRunner extends Command
 
             $acquired = $leadershipStrategy->acquire();
             if (!$acquired) {
-                $this->sleepIfNotAskedToStop(1);
+                $this->sleepIfNotAskedToStop(1000);
                 $this->logger->debug('[{hostname}:{pid}] Lost the elections', [
                     'pid' => getmypid(),
                     'hostname' => gethostname(),
@@ -107,10 +107,11 @@ class RobustCommandRunner extends Command
         return $this->askedToStop;
     }
 
-    private function sleepIfNotAskedToStop(int $seconds): bool
+    private function sleepIfNotAskedToStop(int $milliSeconds): bool
     {
-        for ($i = 0; $i < $seconds && !$this->askedToStop(); ++$i) {
-            sleep(1);
+        $microSeconds = $milliSeconds * 1000;
+        for ($i = 0; $i < $microSeconds && !$this->askedToStop(); $i = $i + 50000) {
+            usleep(50000);
         }
 
         return $this->askedToStop();
