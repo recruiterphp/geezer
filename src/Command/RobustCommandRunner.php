@@ -82,7 +82,6 @@ class RobustCommandRunner extends Command
 
             $this->sleepAccordingTo($waitStrategy);
 
-            $leadershipStrategy->release();
             $this->possiblyCollectGarbage();
         }
 
