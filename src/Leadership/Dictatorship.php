@@ -31,6 +31,10 @@ class Dictatorship implements LeadershipStrategy
 
     public function acquire(): bool
     {
+        if ($this->refresh()) {
+            return true;
+        }
+
         try {
             $this->lock->wait(1, (int) ($this->termOfOffice * .3));
             $this->lock->acquire($this->termOfOffice);
@@ -52,7 +56,7 @@ class Dictatorship implements LeadershipStrategy
     public function refresh(): bool
     {
         try {
-            $this->lock->refresh();
+            $this->lock->refresh($this->termOfOffice);
         } catch (LockNotAvailableException $e) {
             return false;
         }
