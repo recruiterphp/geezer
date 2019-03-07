@@ -86,6 +86,8 @@ class RobustCommandRunner extends Command
             $this->possiblyCollectGarbage();
         }
 
+        $this->wrapped->shutdown();
+
         // probably not needed, ad abundantiam
         $leadershipStrategy->release();
     }

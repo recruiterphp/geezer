@@ -25,4 +25,9 @@ interface RobustCommand
      * @return bool true on success, false otherwhise (e.g. nothing to do)
      */
     public function execute(): bool;
+
+    /**
+     * @return bool true on successful shutdown, false otherwhise
+     */
+    public function shutdown(): bool;
 }
