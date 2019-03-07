@@ -54,6 +54,7 @@ class RobustCommandRunner extends Command
         $leadershipStrategy = $this->wrapped->leadershipStrategy();
         $waitStrategy = $this->wrapped->waitStrategy();
 
+        $occuredException = null;
         while (!$this->askedToStop()) {
             $this->logger->debug('[{hostname}:{pid}] Leadership election', [
                 'pid' => getmypid(),
@@ -75,7 +76,21 @@ class RobustCommandRunner extends Command
                 'hostname' => gethostname(),
             ]);
 
-            $success = $this->wrapped->execute();
+            try {
+                $success = $this->wrapped->execute();
+            } catch (Exception $e) {
+                $this->logger->error('[{hostname}:{pid}] throws an Exception: {exceptionClass} -> {exceptionMessage} {exceptionTrace}', [
+                    'pid' => getmypid(),
+                    'hostname' => gethostname(),
+                    'exceptionClass' => get_class($e),
+                    'exceptionMessage' => $e->getMessage(),
+                    'exceptionTrace' => $e->getTraceAsString(),
+                ]);
+
+                $occuredException = $e;
+
+                break;
+            }
             if ($success) {
                 $waitStrategy->rewind();
             }
@@ -85,7 +100,7 @@ class RobustCommandRunner extends Command
             $this->possiblyCollectGarbage();
         }
 
-        $this->wrapped->shutdown();
+        $this->wrapped->shutdown($occuredException);
 
         // probably not needed, ad abundantiam
         $leadershipStrategy->release();
