@@ -31,6 +31,7 @@ class RobustCommandRunner extends Command
         SIGINT,
         SIGQUIT,
         SIGTERM,
+        SIGHUP,
     ];
 
     private const CYCLES_BEFORE_GC = 100;
