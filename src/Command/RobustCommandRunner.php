@@ -4,6 +4,7 @@ namespace Geezer\Command;
 
 use Exception;
 use Geezer\Timing\WaitStrategy;
+use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,36 +58,24 @@ class RobustCommandRunner extends Command
 
         $occuredException = null;
         while (!$this->askedToStop()) {
-            $this->logger->debug('[{hostname}:{pid}] Leadership election', [
-                'pid' => getmypid(),
-                'hostname' => gethostname(),
-            ]);
+            $this->log('Leadership election');
 
             $acquired = $leadershipStrategy->acquire();
             if (!$acquired) {
                 $this->sleepIfNotAskedToStop(1000);
-                $this->logger->debug('[{hostname}:{pid}] Lost the elections', [
-                    'pid' => getmypid(),
-                    'hostname' => gethostname(),
-                ]);
+                $this->log('Lost the elections');
                 continue;
             }
 
-            $this->logger->debug('[{hostname}:{pid}] Won the elections', [
-                'pid' => getmypid(),
-                'hostname' => gethostname(),
-            ]);
+            $this->log('Won the elections');
 
             try {
                 $success = $this->wrapped->execute();
             } catch (Exception $e) {
-                $this->logger->error('[{hostname}:{pid}] throws an Exception: {exceptionClass} -> {exceptionMessage} {exceptionTrace}', [
-                    'pid' => getmypid(),
-                    'hostname' => gethostname(),
-                    'exceptionClass' => get_class($e),
-                    'exceptionMessage' => $e->getMessage(),
-                    'exceptionTrace' => $e->getTraceAsString(),
-                ]);
+                $this->log(
+                    sprintf('throws an Exception: %s -> %s %s', get_class($e), $e->getMessage(), $e->getTraceAsString()),
+                    LogLevel::ERROR
+                );
 
                 $occuredException = $e;
 
@@ -148,5 +137,15 @@ class RobustCommandRunner extends Command
         }
 
         return 0;
+    }
+
+    private function log(string $message, array $extra = [], string $level = LogLevel::DEBUG): void
+    {
+        $this->logger->log($level, "[{hostname}:{pid}] $message", array_merge([
+            'hostname' => gethostname(),
+            'pid' => getmypid(),
+            'datetime' => date('c'),
+            'program' => $this->wrapped->name(),
+        ], $extra));
     }
 }
