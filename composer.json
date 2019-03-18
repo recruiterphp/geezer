@@ -27,7 +27,9 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^7",
-    "friendsofphp/php-cs-fixer": "^2.13"
+    "friendsofphp/php-cs-fixer": "^2.13",
+    "phpstan/phpstan": "^0.10.5",
+    "phpstan/phpstan-phpunit": "^0.10.0"
   },
   "provide": {
     "easywelfare/geezer-implementation": "2.0.0"
