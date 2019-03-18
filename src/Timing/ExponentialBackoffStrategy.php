@@ -42,10 +42,10 @@ class ExponentialBackoffStrategy implements WaitStrategy
             return 0;
         }
 
-        return min(
+        return intval(min(
             2 ** ($this->attempt - 1) * $this->from,
             $this->to
-        );
+        ));
     }
 
     /**
