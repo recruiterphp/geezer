@@ -2,7 +2,9 @@
 
 namespace Geezer\Command;
 
+use Exception;
 use Geezer\Timing\WaitStrategy;
+use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,6 +33,7 @@ class RobustCommandRunner extends Command
         SIGINT,
         SIGQUIT,
         SIGTERM,
+        SIGHUP,
     ];
 
     private const CYCLES_BEFORE_GC = 100;
@@ -53,37 +56,37 @@ class RobustCommandRunner extends Command
         $leadershipStrategy = $this->wrapped->leadershipStrategy();
         $waitStrategy = $this->wrapped->waitStrategy();
 
+        $occuredException = null;
         while (!$this->askedToStop()) {
-            $this->logger->debug('[{hostname}:{pid}] Leadership election', [
-                'pid' => getmypid(),
-                'hostname' => gethostname(),
-            ]);
+            $this->log('Leadership election');
 
             $acquired = $leadershipStrategy->acquire();
             if (!$acquired) {
-                $this->sleepIfNotAskedToStop(1);
-                $this->logger->debug('[{hostname}:{pid}] Lost the elections', [
-                    'pid' => getmypid(),
-                    'hostname' => gethostname(),
-                ]);
+                $this->sleepIfNotAskedToStop(1000);
+                $this->log('Lost the elections');
                 continue;
             }
 
-            $this->logger->debug('[{hostname}:{pid}] Won the elections', [
-                'pid' => getmypid(),
-                'hostname' => gethostname(),
-            ]);
+            $this->log('Won the elections');
 
-            $success = $this->wrapped->execute();
+            try {
+                $success = $this->wrapped->execute();
+            } catch (Exception $e) {
+                $this->log('Thrown an Exception: ' . get_class($e), ['exception' => $e], LogLevel::ERROR);
+                $occuredException = $e;
+
+                break;
+            }
             if ($success) {
                 $waitStrategy->rewind();
             }
 
             $this->sleepAccordingTo($waitStrategy);
 
-            $leadershipStrategy->release();
             $this->possiblyCollectGarbage();
         }
+
+        $this->wrapped->shutdown($occuredException);
 
         // probably not needed, ad abundantiam
         $leadershipStrategy->release();
@@ -107,10 +110,11 @@ class RobustCommandRunner extends Command
         return $this->askedToStop;
     }
 
-    private function sleepIfNotAskedToStop(int $seconds): bool
+    private function sleepIfNotAskedToStop(int $milliSeconds): bool
     {
-        for ($i = 0; $i < $seconds && !$this->askedToStop(); ++$i) {
-            sleep(1);
+        $microSeconds = $milliSeconds * 1000;
+        for ($i = 0; $i < $microSeconds && !$this->askedToStop(); $i = $i + 50000) {
+            usleep(50000);
         }
 
         return $this->askedToStop();
@@ -129,5 +133,15 @@ class RobustCommandRunner extends Command
         }
 
         return 0;
+    }
+
+    private function log(string $message, array $extra = [], string $level = LogLevel::DEBUG): void
+    {
+        $this->logger->log($level, "[{hostname}:{pid}] $message", array_merge([
+            'hostname' => gethostname(),
+            'pid' => getmypid(),
+            'datetime' => date('c'),
+            'program' => $this->wrapped->name(),
+        ], $extra));
     }
 }
