@@ -2,6 +2,7 @@
 
 namespace Geezer\Command;
 
+use Exception;
 use Geezer\Leadership\LeadershipStrategy;
 use Geezer\Timing\WaitStrategy;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -25,4 +26,9 @@ interface RobustCommand
      * @return bool true on success, false otherwhise (e.g. nothing to do)
      */
     public function execute(): bool;
+
+    /**
+     * @return bool true on successful shutdown, false otherwhise
+     */
+    public function shutdown(?Exception $e = null): bool;
 }

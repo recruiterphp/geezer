@@ -2,7 +2,7 @@
 
 namespace Geezer\Timing;
 
-class ExponentialBackoffStrategy implements WaitStrategy
+class ConstantPause implements WaitStrategy
 {
     /**
      * @var int
@@ -12,23 +12,16 @@ class ExponentialBackoffStrategy implements WaitStrategy
     /**
      * @var int
      */
-    private $from;
+    private $pause;
 
     /**
-     * @var int
-     */
-    private $to;
-
-    /**
-     * ExponentialBackoffStrategy constructor.
+     * ConstantPause constructor.
      *
-     * @param int $from minimum milliseconds to wait (on second attempt)
-     * @param int $to   maximum milliseconds to wait
+     * @param int $pause milliseconds to wait
      */
-    public function __construct(int $from, int $to)
+    public function __construct(int $pause)
     {
-        $this->from = $from;
-        $this->to = $to;
+        $this->pause = $pause;
     }
 
     /**
@@ -38,14 +31,7 @@ class ExponentialBackoffStrategy implements WaitStrategy
      */
     public function current(): int
     {
-        if (0 === $this->attempt) {
-            return 0;
-        }
-
-        return intval(min(
-            2 ** ($this->attempt - 1) * $this->from,
-            $this->to
-        ));
+        return $this->pause;
     }
 
     /**
