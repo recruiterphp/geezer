@@ -23,7 +23,7 @@
     "php": "^7.2",
     "ext-pcntl": "*",
     "symfony/console": "~4.0",
-    "easywelfare/onebip-concurrency": "dev-master"
+    "easywelfare/onebip-concurrency": "^2.0.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^7",
