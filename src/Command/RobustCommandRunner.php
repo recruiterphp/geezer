@@ -12,6 +12,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RobustCommandRunner extends Command
 {
+    private const CYCLES_BEFORE_GC = 100;
+
+    private const LEADERSHIP_STATUS_ACQUIRED = 'acquired';
+    private const LEADERSHIP_STATUS_LOST = 'lost';
+
+    private const STOP_SIGNALS = [
+        SIGINT,
+        SIGQUIT,
+        SIGTERM,
+        SIGHUP,
+    ];
+
     /**
      * @var RobustCommand
      */
@@ -29,14 +41,7 @@ class RobustCommandRunner extends Command
 
     private $garbageCollectorCounter = 0;
 
-    private const STOP_SIGNALS = [
-        SIGINT,
-        SIGQUIT,
-        SIGTERM,
-        SIGHUP,
-    ];
-
-    private const CYCLES_BEFORE_GC = 100;
+    private $leadershipStatus = null;
 
     public function __construct(RobustCommand $wrapped, LoggerInterface $logger)
     {
@@ -46,6 +51,7 @@ class RobustCommandRunner extends Command
         $this->logger = $logger;
         $this->setDescription($wrapped->description());
         $this->setDefinition($wrapped->definition());
+        $this->leadershipStatus = null;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -62,12 +68,18 @@ class RobustCommandRunner extends Command
 
             $acquired = $leadershipStrategy->acquire();
             if (!$acquired) {
+                $this->whenLeadershipsStatusChange(self::LEADERSHIP_STATUS_LOST, function () {
+                    $this->wrapped->leadershipLost();
+                    $this->log('Lost the elections');
+                });
                 $this->sleepIfNotAskedToStop(1000);
-                $this->log('Lost the elections');
                 continue;
             }
 
-            $this->log('Won the elections');
+            $this->whenLeadershipsStatusChange(self::LEADERSHIP_STATUS_ACQUIRED, function () {
+                $this->wrapped->leadershipAcquired();
+                $this->log('Won the elections');
+            });
 
             try {
                 $success = $this->wrapped->execute();
@@ -90,6 +102,14 @@ class RobustCommandRunner extends Command
 
         // probably not needed, ad abundantiam
         $leadershipStrategy->release();
+    }
+
+    private function whenLeadershipsStatusChange($newLeadershipStatus, callable $do)
+    {
+        if ($this->leadershipStatus !== $newLeadershipStatus) {
+            $this->leadershipStatus = $newLeadershipStatus;
+            $do();
+        }
     }
 
     private function registerSignalHandlers(): void
