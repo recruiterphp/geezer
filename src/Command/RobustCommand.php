@@ -23,16 +23,6 @@ interface RobustCommand
     public function init(InputInterface $input): void;
 
     /**
-     * This method is called every time leadership status changes from lost to acquired.
-     */
-    public function leadershipAcquired(): void;
-
-    /**
-     * This method is called every time leadership status changes from acquired to lost.
-     */
-    public function leadershipLost(): void;
-
-    /**
      * @return bool true on success, false otherwhise (e.g. nothing to do)
      */
     public function execute(): bool;
