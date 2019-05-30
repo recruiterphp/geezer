@@ -12,6 +12,18 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RobustCommandRunner extends Command
 {
+    private const CYCLES_BEFORE_GC = 100;
+
+    private const LEADERSHIP_STATUS_ACQUIRED = 'acquired';
+    private const LEADERSHIP_STATUS_LOST = 'lost';
+
+    private const STOP_SIGNALS = [
+        SIGINT,
+        SIGQUIT,
+        SIGTERM,
+        SIGHUP,
+    ];
+
     /**
      * @var RobustCommand
      */
@@ -29,14 +41,7 @@ class RobustCommandRunner extends Command
 
     private $garbageCollectorCounter = 0;
 
-    private const STOP_SIGNALS = [
-        SIGINT,
-        SIGQUIT,
-        SIGTERM,
-        SIGHUP,
-    ];
-
-    private const CYCLES_BEFORE_GC = 100;
+    private $leadershipStatus = null;
 
     public function __construct(RobustCommand $wrapped, LoggerInterface $logger)
     {
@@ -46,6 +51,7 @@ class RobustCommandRunner extends Command
         $this->logger = $logger;
         $this->setDescription($wrapped->description());
         $this->setDefinition($wrapped->definition());
+        $this->leadershipStatus = null;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -62,12 +68,12 @@ class RobustCommandRunner extends Command
 
             $acquired = $leadershipStrategy->acquire();
             if (!$acquired) {
+                $this->leadershipWasLost();
                 $this->sleepIfNotAskedToStop(1000);
-                $this->log('Lost the elections');
                 continue;
             }
 
-            $this->log('Won the elections');
+            $this->leadershipWasAcquired();
 
             try {
                 $success = $this->wrapped->execute();
@@ -90,6 +96,31 @@ class RobustCommandRunner extends Command
 
         // probably not needed, ad abundantiam
         $leadershipStrategy->release();
+    }
+
+    private function leadershipWasAcquired()
+    {
+        $this->leadershipStatusChanged(self::LEADERSHIP_STATUS_ACQUIRED, 'leadershipAcquired');
+    }
+
+    private function leadershipWasLost()
+    {
+        $this->leadershipStatusChanged(self::LEADERSHIP_STATUS_LOST, 'leadershipLost');
+    }
+
+    private function leadershipStatusChanged($newLeadershipStatus, string $hook)
+    {
+        if ($this->leadershipStatus === $newLeadershipStatus) {
+            return;
+        }
+
+        $this->leadershipStatus = $newLeadershipStatus;
+
+        if ($this->wrapped instanceof LeadershipEventsHandler) {
+            $this->wrapped->$hook();
+        }
+
+        $this->log("Leadership status changed in: `$newLeadershipStatus`");
     }
 
     private function registerSignalHandlers(): void
