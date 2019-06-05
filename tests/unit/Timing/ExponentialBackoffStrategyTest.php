@@ -2,7 +2,7 @@
 
 namespace Test\Geezer\Timing;
 
-use Geezer\Timing\ExponentialBackoffStrategy;
+use Recruiter\Geezer\Timing\ExponentialBackoffStrategy;
 use PHPUnit\Framework\TestCase;
 
 class ExponentialBackoffStrategyTest extends TestCase

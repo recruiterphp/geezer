@@ -28,13 +28,13 @@
   "prefer-stable": true,
   "autoload": {
     "psr-4": {
-      "Geezer\\": "src",
+      "Recruiter\\Geezer\\": "src",
       "Test\\Geezer\\": "tests/unit"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Geezer\\": "tests"
+      "Recruiter\\Geezer\\": "tests"
     }
   }
 }

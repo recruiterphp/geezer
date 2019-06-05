@@ -1,9 +1,9 @@
 <?php
 
-namespace Geezer\Command;
+namespace Recruiter\Geezer\Command;
 
 use Exception;
-use Geezer\Timing\WaitStrategy;
+use Recruiter\Geezer\Timing\WaitStrategy;
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;

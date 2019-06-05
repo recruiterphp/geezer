@@ -1,6 +1,6 @@
 <?php
 
-namespace Geezer\Command;
+namespace Recruiter\Geezer\Command;
 
 interface LeadershipEventsHandler
 {

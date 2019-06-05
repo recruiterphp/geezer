@@ -1,6 +1,6 @@
 <?php
 
-namespace Geezer\Timing;
+namespace Recruiter\Geezer\Timing;
 
 use Iterator;
 
