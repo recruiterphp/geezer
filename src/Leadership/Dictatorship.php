@@ -2,8 +2,8 @@
 
 namespace Geezer\Leadership;
 
-use Onebip\Concurrency\Lock;
-use Onebip\Concurrency\LockNotAvailableException;
+use RecruiterPhp\Concurrency\Lock;
+use RecruiterPhp\Concurrency\LockNotAvailableException;
 
 class Dictatorship implements LeadershipStrategy
 {
