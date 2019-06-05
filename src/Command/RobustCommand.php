@@ -1,10 +1,10 @@
 <?php
 
-namespace Geezer\Command;
+namespace Recruiter\Geezer\Command;
 
 use Exception;
-use Geezer\Leadership\LeadershipStrategy;
-use Geezer\Timing\WaitStrategy;
+use Recruiter\Geezer\Leadership\LeadershipStrategy;
+use Recruiter\Geezer\Timing\WaitStrategy;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Geezer\Leadership;
+namespace Recruiter\Geezer\Leadership;
 
-use RecruiterPhp\Concurrency\Lock;
-use RecruiterPhp\Concurrency\LockNotAvailableException;
+use Recruiter\Concurrency\Lock;
+use Recruiter\Concurrency\LockNotAvailableException;
 
 class Dictatorship implements LeadershipStrategy
 {

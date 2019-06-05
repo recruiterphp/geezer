@@ -1,6 +1,6 @@
 <?php
 
-namespace Geezer\Leadership;
+namespace Recruiter\Geezer\Leadership;
 
 interface LeadershipStrategy
 {
