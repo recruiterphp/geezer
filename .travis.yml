@@ -1,0 +1,12 @@
+language: php
+php:
+  - 7.2
+  - 7.3
+before_script:
+  - "pecl install mongodb"
+  - "phpenv config-add phpconfig.ini"
+  - "composer install"
+script:
+  - "vendor/bin/phpunit"
+sudo: false
+services: mongodb
