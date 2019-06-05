@@ -1,5 +1,5 @@
 {
-  "name": "easywelfare/geezer",
+  "name": "recruiterphp/geezer",
   "description": "PHP tools to build robust long-running processes",
   "type": "library",
   "license": "proprietary",
