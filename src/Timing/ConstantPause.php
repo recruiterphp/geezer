@@ -31,6 +31,10 @@ class ConstantPause implements WaitStrategy
      */
     public function current(): int
     {
+        if (0 === $this->attempt) {
+            return 0;
+        }
+
         return $this->pause;
     }
 
