@@ -2,11 +2,11 @@
 
 namespace Recruiter\Geezer\Command;
 
-use Exception;
 use Recruiter\Geezer\Leadership\LeadershipStrategy;
 use Recruiter\Geezer\Timing\WaitStrategy;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Throwable;
 
 interface RobustCommand
 {
@@ -30,5 +30,5 @@ interface RobustCommand
     /**
      * @return bool true on successful shutdown, false otherwhise
      */
-    public function shutdown(?Exception $e = null): bool;
+    public function shutdown(?Throwable $e = null): bool;
 }
