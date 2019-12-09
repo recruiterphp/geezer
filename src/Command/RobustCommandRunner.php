@@ -2,13 +2,13 @@
 
 namespace Recruiter\Geezer\Command;
 
-use Exception;
 use Recruiter\Geezer\Timing\WaitStrategy;
 use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 class RobustCommandRunner extends Command
 {
@@ -77,7 +77,7 @@ class RobustCommandRunner extends Command
 
             try {
                 $success = $this->wrapped->execute();
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 $this->log('Thrown an Exception: ' . get_class($e), ['exception' => $e], LogLevel::ERROR);
                 $occuredException = $e;
 
@@ -94,7 +94,6 @@ class RobustCommandRunner extends Command
 
         $this->wrapped->shutdown($occuredException);
 
-        // probably not needed, ad abundantiam
         $leadershipStrategy->release();
     }
 
