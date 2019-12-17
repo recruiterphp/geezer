@@ -23,6 +23,11 @@ interface RobustCommand
     public function init(InputInterface $input): void;
 
     /**
+     * @return bool true when the execution is terminated and the command can quit, false otherwise
+     */
+    public function hasTerminated(): bool;
+
+    /**
      * @return bool true on success, false otherwhise (e.g. nothing to do)
      */
     public function execute(): bool;

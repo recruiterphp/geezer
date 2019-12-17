@@ -2,9 +2,9 @@
 
 namespace Recruiter\Geezer\Command;
 
-use Recruiter\Geezer\Timing\WaitStrategy;
-use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Recruiter\Geezer\Timing\WaitStrategy;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -83,6 +83,11 @@ class RobustCommandRunner extends Command
 
                 break;
             }
+
+            if ($this->wrapped->hasTerminated()) {
+                break;
+            }
+
             if ($success) {
                 $waitStrategy->rewind();
             }
