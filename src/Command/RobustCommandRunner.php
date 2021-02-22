@@ -83,6 +83,11 @@ class RobustCommandRunner extends Command
 
                 break;
             }
+
+            if ($this->wrapped->hasTerminated()) {
+                break;
+            }
+
             if ($success) {
                 $waitStrategy->rewind();
             }
