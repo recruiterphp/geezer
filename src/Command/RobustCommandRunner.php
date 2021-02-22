@@ -13,6 +13,7 @@ use Throwable;
 class RobustCommandRunner extends Command
 {
     private const CYCLES_BEFORE_GC = 100;
+    private const SLEEP_STEP_USEC = 200000;
 
     private const LEADERSHIP_STATUS_ACQUIRED = 'acquired';
     private const LEADERSHIP_STATUS_LOST = 'lost';
@@ -152,8 +153,8 @@ class RobustCommandRunner extends Command
     private function sleepIfNotAskedToStop(int $milliSeconds): bool
     {
         $microSeconds = $milliSeconds * 1000;
-        for ($i = 0; $i < $microSeconds && !$this->askedToStop(); $i = $i + 50000) {
-            usleep(50000);
+        for ($i = 0; $i < $microSeconds && !$this->askedToStop(); $i = $i + self::SLEEP_STEP_USEC) {
+            usleep(self::SLEEP_STEP_USEC);
         }
 
         return $this->askedToStop();
