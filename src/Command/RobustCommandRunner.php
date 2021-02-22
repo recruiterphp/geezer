@@ -13,7 +13,7 @@ use Throwable;
 class RobustCommandRunner extends Command
 {
     private const CYCLES_BEFORE_GC = 100;
-    private const SLEEP_STEP_USEC = 50000;
+    private const SLEEP_STEP_USEC = 200000;
 
     private const LEADERSHIP_STATUS_ACQUIRED = 'acquired';
     private const LEADERSHIP_STATUS_LOST = 'lost';
