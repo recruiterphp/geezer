@@ -94,17 +94,17 @@ class RobustCommandRunner extends Command
         return self::SUCCESS;
     }
 
-    private function leadershipWasAcquired()
+    private function leadershipWasAcquired(): void
     {
         $this->leadershipStatusChanged(self::LEADERSHIP_STATUS_ACQUIRED, 'leadershipAcquired');
     }
 
-    private function leadershipWasLost()
+    private function leadershipWasLost(): void
     {
         $this->leadershipStatusChanged(self::LEADERSHIP_STATUS_LOST, 'leadershipLost');
     }
 
-    private function leadershipStatusChanged($newLeadershipStatus, string $hook)
+    private function leadershipStatusChanged(?string $newLeadershipStatus, string $hook): void
     {
         if ($this->leadershipStatus === $newLeadershipStatus) {
             return;
@@ -128,7 +128,7 @@ class RobustCommandRunner extends Command
         }
     }
 
-    private function askedToStop()
+    private function askedToStop(): bool
     {
         if (!$this->askedToStop) {
             pcntl_signal_dispatch();
@@ -153,15 +153,16 @@ class RobustCommandRunner extends Command
         $waitStrategy->next();
     }
 
-    private function possiblyCollectGarbage(): int
+    private function possiblyCollectGarbage(): void
     {
         if (0 === (++$this->garbageCollectorCounter % self::CYCLES_BEFORE_GC)) {
-            return gc_collect_cycles();
+            gc_collect_cycles();
         }
-
-        return 0;
     }
 
+    /**
+     * @param array<mixed> $extra
+     */
     private function log(string $message, array $extra = [], string $level = LogLevel::DEBUG): void
     {
         $this->logger->log($level, "[{hostname}:{pid}] $message", array_merge([
