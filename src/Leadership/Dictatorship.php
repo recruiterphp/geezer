@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Recruiter\Geezer\Leadership;
 
 use Recruiter\Concurrency\Lock;
@@ -19,9 +21,6 @@ class Dictatorship implements LeadershipStrategy
 
     /**
      * Dictatorship constructor.
-     *
-     * @param Lock $lock
-     * @param int  $termOfOffice
      */
     public function __construct(Lock $lock, int $termOfOffice)
     {
