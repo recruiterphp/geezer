@@ -4,15 +4,9 @@ namespace Recruiter\Geezer\Timing;
 
 class ConstantPause implements WaitStrategy
 {
-    /**
-     * @var int
-     */
-    private $attempt = 0;
+    private int $attempt = 0;
 
-    /**
-     * @var int
-     */
-    private $pause;
+    private int $pause;
 
     /**
      * ConstantPause constructor.
@@ -84,7 +78,7 @@ class ConstantPause implements WaitStrategy
      * @see https://php.net/manual/en/iterator.next.php
      * @since 5.0.0
      */
-    public function next()
+    public function next(): void
     {
         ++$this->attempt;
     }

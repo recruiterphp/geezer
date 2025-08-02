@@ -12,49 +12,34 @@ use Throwable;
 
 class RobustCommandRunner extends Command
 {
-    private const CYCLES_BEFORE_GC = 100;
+    private const int CYCLES_BEFORE_GC = 100;
 
-    private const LEADERSHIP_STATUS_ACQUIRED = 'acquired';
-    private const LEADERSHIP_STATUS_LOST = 'lost';
+    private const string LEADERSHIP_STATUS_ACQUIRED = 'acquired';
+    private const string LEADERSHIP_STATUS_LOST = 'lost';
 
-    private const STOP_SIGNALS = [
+    private const array STOP_SIGNALS = [
         SIGINT,
         SIGQUIT,
         SIGTERM,
         SIGHUP,
     ];
 
-    /**
-     * @var RobustCommand
-     */
-    private $wrapped;
+    private bool $askedToStop = false;
 
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private int $garbageCollectorCounter = 0;
 
-    /**
-     * @var bool
-     */
-    private $askedToStop = false;
+    private ?string $leadershipStatus;
 
-    private $garbageCollectorCounter = 0;
-
-    private $leadershipStatus = null;
-
-    public function __construct(RobustCommand $wrapped, LoggerInterface $logger)
+    public function __construct(private readonly RobustCommand $wrapped, private readonly LoggerInterface $logger)
     {
         parent::__construct($wrapped->name());
 
-        $this->wrapped = $wrapped;
-        $this->logger = $logger;
         $this->setDescription($wrapped->description());
         $this->setDefinition($wrapped->definition());
         $this->leadershipStatus = null;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->wrapped->init($input);
         $this->registerSignalHandlers();
@@ -102,8 +87,10 @@ class RobustCommandRunner extends Command
         $leadershipStrategy->release();
 
         if ($occuredException) {
-            exit(2);
+            return self::FAILURE;
         }
+
+        return self::SUCCESS;
     }
 
     private function leadershipWasAcquired()
@@ -134,7 +121,7 @@ class RobustCommandRunner extends Command
     private function registerSignalHandlers(): void
     {
         foreach (self::STOP_SIGNALS as $signal) {
-            pcntl_signal($signal, function () {
+            pcntl_signal($signal, function (): void {
                 $this->askedToStop = true;
             });
         }
@@ -152,7 +139,7 @@ class RobustCommandRunner extends Command
     private function sleepIfNotAskedToStop(int $milliSeconds): bool
     {
         $microSeconds = $milliSeconds * 1000;
-        for ($i = 0; $i < $microSeconds && !$this->askedToStop(); $i = $i + 50000) {
+        for ($i = 0; $i < $microSeconds && !$this->askedToStop(); $i += 50000) {
             usleep(50000);
         }
 
