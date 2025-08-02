@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Geezer\Timing;
 
-use Recruiter\Geezer\Timing\ExponentialBackoffStrategy;
 use PHPUnit\Framework\TestCase;
+use Recruiter\Geezer\Timing\ExponentialBackoffStrategy;
 
 class ExponentialBackoffStrategyTest extends TestCase
 {

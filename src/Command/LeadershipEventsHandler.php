@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Recruiter\Geezer\Command;
 
 interface LeadershipEventsHandler
