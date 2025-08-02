@@ -1,23 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Recruiter\Geezer\Timing;
 
 class ExponentialBackoffStrategy implements WaitStrategy
 {
-    /**
-     * @var int
-     */
-    private $attempt = 0;
-
-    /**
-     * @var int
-     */
-    private $from;
-
-    /**
-     * @var int
-     */
-    private $to;
+    private int $attempt = 0;
 
     /**
      * ExponentialBackoffStrategy constructor.
@@ -25,16 +14,12 @@ class ExponentialBackoffStrategy implements WaitStrategy
      * @param int $from minimum milliseconds to wait (on second attempt)
      * @param int $to   maximum milliseconds to wait
      */
-    public function __construct(int $from, int $to)
+    public function __construct(private readonly int $from, private readonly int $to)
     {
-        $this->from = $from;
-        $this->to = $to;
     }
 
     /**
      * Number of milliseconds to wait.
-     *
-     * @return int
      */
     public function current(): int
     {
@@ -44,7 +29,7 @@ class ExponentialBackoffStrategy implements WaitStrategy
 
         return intval(min(
             2 ** ($this->attempt - 1) * $this->from,
-            $this->to
+            $this->to,
         ));
     }
 
@@ -52,9 +37,6 @@ class ExponentialBackoffStrategy implements WaitStrategy
      * Return the key of the current element.
      *
      * @see https://php.net/manual/en/iterator.key.php
-     *
-     * @return int
-     *
      * @since 5.0.0
      */
     public function key(): int
@@ -94,7 +76,7 @@ class ExponentialBackoffStrategy implements WaitStrategy
      * @see https://php.net/manual/en/iterator.next.php
      * @since 5.0.0
      */
-    public function next()
+    public function next(): void
     {
         ++$this->attempt;
     }
