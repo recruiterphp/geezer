@@ -1,4 +1,4 @@
-.PHONY: build up down test phpstan fix-cs install update shell logs clean
+.PHONY: build up down test phpstan rector fix-cs install update shell logs clean
 
 # Build the Docker image
 build:
@@ -26,6 +26,9 @@ test: up
 
 phpstan: up
 	docker compose exec php vendor/bin/phpstan
+
+rector: up
+	docker compose exec php vendor/bin/rector
 
 fix-cs: up
 	docker compose exec php vendor/bin/php-cs-fixer fix -v
