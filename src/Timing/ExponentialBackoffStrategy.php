@@ -7,17 +7,7 @@ class ExponentialBackoffStrategy implements WaitStrategy
     /**
      * @var int
      */
-    private $attempt = 0;
-
-    /**
-     * @var int
-     */
-    private $from;
-
-    /**
-     * @var int
-     */
-    private $to;
+    private int $attempt = 0;
 
     /**
      * ExponentialBackoffStrategy constructor.
@@ -25,10 +15,8 @@ class ExponentialBackoffStrategy implements WaitStrategy
      * @param int $from minimum milliseconds to wait (on second attempt)
      * @param int $to   maximum milliseconds to wait
      */
-    public function __construct(int $from, int $to)
+    public function __construct(private readonly int $from, private readonly int $to)
     {
-        $this->from = $from;
-        $this->to = $to;
     }
 
     /**
@@ -94,7 +82,7 @@ class ExponentialBackoffStrategy implements WaitStrategy
      * @see https://php.net/manual/en/iterator.next.php
      * @since 5.0.0
      */
-    public function next()
+    public function next(): void
     {
         ++$this->attempt;
     }

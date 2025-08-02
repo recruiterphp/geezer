@@ -1,31 +1,35 @@
 {
   "name": "recruiterphp/geezer",
   "description": "PHP tools to build robust long-running processes",
+  "license": "MIT",
   "type": "library",
-  "license": "proprietary",
   "authors": [
     {
       "name": "Easy Welfare Development Team",
       "email": "dev@easywelfare.com"
+    },
+    {
+      "name": "Contributors",
+      "homepage": "https://github.com/recruiterphp/geezer/graphs/contributors"
     }
   ],
   "require": {
-    "php": "^7.2",
+    "php": "^8.4",
     "ext-pcntl": "*",
-    "symfony/console": "~4.0",
-    "recruiterphp/concurrency": "^3.0.0"
+    "recruiterphp/concurrency": "^4.0",
+    "symfony/console": "7.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "^7",
-    "friendsofphp/php-cs-fixer": "^2.13",
-    "phpstan/phpstan": "^0.10.5",
-    "phpstan/phpstan-phpunit": "^0.10.0"
+    "ergebnis/composer-normalize": "^2.47",
+    "friendsofphp/php-cs-fixer": "^3.85",
+    "phpstan/phpstan": "^2.1",
+    "phpunit/phpunit": "^12.3",
+    "rector/rector": "^2.1"
   },
   "provide": {
-    "easywelfare/geezer-implementation": "2.0.0"
+    "easywelfare/geezer-implementation": "self.version"
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
+  "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
       "Recruiter\\Geezer\\": "src",
@@ -35,6 +39,12 @@
   "autoload-dev": {
     "psr-4": {
       "Recruiter\\Geezer\\": "tests"
+    }
+  },
+  "config": {
+    "allow-plugins": {
+      "ergebnis/composer-normalize": true,
+      "sort-packages": true
     }
   }
 }
