@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 # Install MongoDB extension
 RUN pecl install mongodb \
     && docker-php-ext-enable mongodb \
-    && docker-php-ext-install pcntl
+    && docker-php-ext-install -j$(nproc) pcntl
 
 # Copy Composer from official image
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
