@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Recruiter\Geezer\Timing;
 
 class ConstantPause implements WaitStrategy
@@ -20,8 +22,6 @@ class ConstantPause implements WaitStrategy
 
     /**
      * Number of milliseconds to wait.
-     *
-     * @return int
      */
     public function current(): int
     {
@@ -36,9 +36,6 @@ class ConstantPause implements WaitStrategy
      * Return the key of the current element.
      *
      * @see https://php.net/manual/en/iterator.key.php
-     *
-     * @return int
-     *
      * @since 5.0.0
      */
     public function key(): int
