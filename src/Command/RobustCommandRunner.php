@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class RobustCommandRunner extends Command
 {
     private const int CYCLES_BEFORE_GC = 100;
-    private const int SLEEP_STEP_USEC = 50000;
+    private const int SLEEP_STEP_USEC = 200000;
 
     private const string LEADERSHIP_STATUS_ACQUIRED = 'acquired';
     private const string LEADERSHIP_STATUS_LOST = 'lost';
