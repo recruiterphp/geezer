@@ -30,7 +30,7 @@ class RobustCommandRunner extends Command
 
     private int $garbageCollectorCounter = 0;
 
-    private ?string $leadershipStatus;
+    private ?string $leadershipStatus = null;
 
     public function __construct(private readonly RobustCommand $wrapped, private readonly LoggerInterface $logger)
     {
@@ -38,7 +38,6 @@ class RobustCommandRunner extends Command
 
         $this->setDescription($wrapped->description());
         $this->setDefinition($wrapped->definition());
-        $this->leadershipStatus = null;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -88,7 +87,7 @@ class RobustCommandRunner extends Command
 
         $leadershipStrategy->release();
 
-        if ($occuredException) {
+        if ($occuredException instanceof \Throwable) {
             return self::FAILURE;
         }
 
