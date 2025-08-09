@@ -16,7 +16,7 @@
   "require": {
     "php": "^8.4",
     "ext-pcntl": "*",
-    "recruiterphp/concurrency": "^5.0",
+    "recruiterphp/concurrency": "^6.0",
     "symfony/console": "^7.3"
   },
   "require-dev": {
