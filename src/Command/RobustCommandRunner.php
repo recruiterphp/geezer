@@ -65,7 +65,7 @@ class RobustCommandRunner extends Command
             try {
                 $success = $this->wrapped->execute();
             } catch (\Throwable $e) {
-                $this->log('Thrown an Exception: ' . get_class($e), ['exception' => $e], LogLevel::ERROR);
+                $this->log('Thrown an Exception: ' . $e::class, ['exception' => $e], LogLevel::ERROR);
                 $occuredException = $e;
 
                 break;
