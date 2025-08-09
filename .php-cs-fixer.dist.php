@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return new PhpCsFixer\Config()
     ->setRiskyAllowed(true)
     ->setRules([
@@ -21,5 +23,9 @@ return new PhpCsFixer\Config()
         PhpCsFixer\Finder::create()
             ->in(__DIR__ . '/src')
             ->in(__DIR__ . '/tests')
+            ->append([
+                __FILE__,
+                __DIR__ . '/rector.php',
+            ]),
     )
 ;
