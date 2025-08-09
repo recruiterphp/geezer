@@ -12,23 +12,23 @@ class ExponentialBackoffStrategyTest extends TestCase
     public function testNextWorksCorrectly(): void
     {
         $strategy = new ExponentialBackoffStrategy(100, 1000);
-        $this->assertEquals(0, $strategy->current());
+        $this->assertSame(0, $strategy->current());
         $strategy->next();
-        $this->assertEquals(100, $strategy->current());
+        $this->assertSame(100, $strategy->current());
         $strategy->next();
-        $this->assertEquals(200, $strategy->current());
+        $this->assertSame(200, $strategy->current());
         $strategy->next();
-        $this->assertEquals(400, $strategy->current());
+        $this->assertSame(400, $strategy->current());
         $strategy->next();
-        $this->assertEquals(800, $strategy->current());
+        $this->assertSame(800, $strategy->current());
         $strategy->next();
-        $this->assertEquals(1000, $strategy->current());
+        $this->assertSame(1000, $strategy->current());
         $strategy->next();
-        $this->assertEquals(1000, $strategy->current());
+        $this->assertSame(1000, $strategy->current());
 
         $strategy->rewind();
-        $this->assertEquals(0, $strategy->current());
+        $this->assertSame(0, $strategy->current());
         $strategy->next();
-        $this->assertEquals(100, $strategy->current());
+        $this->assertSame(100, $strategy->current());
     }
 }
