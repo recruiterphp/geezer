@@ -7,25 +7,13 @@ namespace Recruiter\Geezer\Leadership;
 use Recruiter\Concurrency\Lock;
 use Recruiter\Concurrency\LockNotAvailableException;
 
-class Dictatorship implements LeadershipStrategy
+final readonly class Dictatorship implements LeadershipStrategy
 {
-    /**
-     * @var Lock
-     */
-    private $lock;
-
-    /**
-     * @var int seconds
-     */
-    private $termOfOffice;
-
     /**
      * Dictatorship constructor.
      */
-    public function __construct(Lock $lock, int $termOfOffice)
+    public function __construct(private Lock $lock, private int $termOfOffice)
     {
-        $this->lock = $lock;
-        $this->termOfOffice = $termOfOffice;
     }
 
     public function acquire(): bool
@@ -37,7 +25,7 @@ class Dictatorship implements LeadershipStrategy
         try {
             $this->lock->wait(1, (int) ($this->termOfOffice * .3));
             $this->lock->acquire($this->termOfOffice);
-        } catch (LockNotAvailableException $e) {
+        } catch (LockNotAvailableException) {
             return false;
         }
 
@@ -48,7 +36,7 @@ class Dictatorship implements LeadershipStrategy
     {
         try {
             $this->lock->release();
-        } catch (LockNotAvailableException $e) {
+        } catch (LockNotAvailableException) {
         }
     }
 
@@ -56,7 +44,7 @@ class Dictatorship implements LeadershipStrategy
     {
         try {
             $this->lock->refresh($this->termOfOffice);
-        } catch (LockNotAvailableException $e) {
+        } catch (LockNotAvailableException) {
             return false;
         }
 

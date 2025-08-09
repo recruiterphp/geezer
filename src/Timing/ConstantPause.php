@@ -8,16 +8,13 @@ class ConstantPause implements WaitStrategy
 {
     private int $attempt = 0;
 
-    private int $pause;
-
     /**
      * ConstantPause constructor.
      *
      * @param int $pause milliseconds to wait
      */
-    public function __construct(int $pause)
+    public function __construct(private readonly int $pause)
     {
-        $this->pause = $pause;
     }
 
     /**
